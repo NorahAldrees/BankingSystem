@@ -1,23 +1,19 @@
-name: Python Tests
+name: Java CI
 
 on: [push]
 
 jobs:
-  test:
+  build:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Set up Python
-      uses: actions/setup-python@v2
+    - name: Set up JDK 11
+      uses: actions/setup-java@v1
       with:
-        python-version: '3.x'
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install pytest coverage
-    - name: Run tests with coverage
-      run: |
-        coverage run -m pytest
-        coverage report
-    - name: Upload coverage report
-      run: coverage xml
+        java-version: '11'
+    - name: Build with Maven
+      run: mvn -B package --file pom.xml
+    - name: Run tests
+      run: mvn test
+    - name: Generate coverage report
+      run: mvn jacoco:report
